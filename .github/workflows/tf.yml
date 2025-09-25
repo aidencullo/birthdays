@@ -10,3 +10,8 @@ jobs:
       - uses: hashicorp/setup-terraform@v3
       - run: terraform init
       - run: terraform apply -auto-approve
+  
+  hello-world:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Hello World!"
