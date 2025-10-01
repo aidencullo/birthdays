@@ -3,3 +3,7 @@ module "watereye_web" {
   environment   = var.environment
 }
 
+variable "environment" {
+  type    = string
+  default = "dev"
+}

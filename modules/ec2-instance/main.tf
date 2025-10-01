@@ -1,4 +1,9 @@
 resource "aws_instance" "this" {
-  ami           = "ami-123456"
-  instance_type = "t2.micro"
+  ami           = "ami-0254b2d5c4c472488"  # valid Amazon Linux 2 AMI
+  instance_type = "t3.micro"
+}
+
+variable "environment" {
+  type    = string
+  default = "dev"
 }
