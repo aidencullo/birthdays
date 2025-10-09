@@ -1,0 +1,12 @@
+name: demo
+on: [push]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      MY_VAR: ${{ vars.MY_VAR }}
+      MY_SECRET: ${{ secrets.MY_SECRET }}
+    steps:
+      - run: |
+          echo "Var: $MY_VAR"
+          echo "Secret: $MY_SECRET"
