@@ -7,5 +7,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          echo "Var: ${{ vars.VAR }}"
-          echo "Secret: ${{ secrets.SECRET }}"
+          echo "repo Var: ${{ vars.REPO_VAR }}"
+          echo "repo Secret: ${{ secrets.REPO_SECRET }}"
+
+  my_job:
+    runs-on: ubuntu-latest
+    environment: my_env
+    steps:
+      - run: |
+          echo "env Var: ${{ vars.ENV_VAR }}"
+          echo "repo Var: ${{ vars.REPO_VAR }}"
+          echo "env Secret: ${{ secrets.ENV_SECRET }}"
+          echo "repo Secret: ${{ secrets.REPO_SECRET }}"
