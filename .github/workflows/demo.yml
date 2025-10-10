@@ -7,5 +7,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          echo "Var: ${{ vars.MY_VAR }}"
+          echo "Var: ${{ vars.VAR }}"
           echo "Secret: ${{ secrets.SECRET }}"
