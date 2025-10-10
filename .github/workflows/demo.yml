@@ -8,4 +8,4 @@ jobs:
     steps:
       - run: |
           echo "Var: ${{ vars.MY_VAR }}"
-          echo "Secret: ${{ secrets.MY_SECRET }}"
+          echo "Secret: ${{ secrets.SECRET }}"
