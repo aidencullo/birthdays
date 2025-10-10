@@ -1,0 +1,12 @@
+name: cleanup
+on:
+  workflow_dispatch:   # manual
+  schedule:
+    - cron: "0 2 * * *"  # daily 2 AM UTC
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cleanup task
+        run: echo "Running daily cleanup at 2 AM UTC"
