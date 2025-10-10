@@ -2,6 +2,10 @@ name: demo
 on: 
   push:
   workflow_dispatch:
+env:
+  ENV_NAME: "staging"    # var
+  TIMEOUT: 30            # var
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -22,3 +26,9 @@ jobs:
           echo "repo Var: ${{ vars.REPO_VAR }}"
           echo "env Secret: ${{ secrets.ENV_SECRET }}"
           echo "repo Secret: ${{ secrets.REPO_SECRET }}"
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print env
+        run: echo "Deploying to $ENV_NAME with timeout $TIMEOUT seconds"
