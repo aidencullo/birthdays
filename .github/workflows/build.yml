@@ -1,0 +1,18 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Build Script
+        run: |
+          mkdir -p watereye/
+          cp -a ./web-app/. ./watereye/ #cp -a is better than cp -r because, in addition to recursive copying, it preserves all file attributes (permissions, ownership, symlinks, timestamps). This way you get an exact 1:1 copy of the directory, including hidden files (like .env).
