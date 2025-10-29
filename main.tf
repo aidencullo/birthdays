@@ -36,3 +36,8 @@ resource "aws_route53_record" "web_a_record" {
   ttl     = var.record_ttl
   records = [module.ec2_web.instance_public_ip]
 }
+
+output "route53_record_fqdn" {
+  value       = aws_route53_record.web_a_record.fqdn
+  description = "Fully-qualified domain name of the Route53 A record"
+}
