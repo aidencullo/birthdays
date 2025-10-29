@@ -22,3 +22,17 @@ output "hello_world_url" {
   value       = "http://${module.ec2_web.instance_public_ip}/hello.html"
   description = "URL to access the Hello World server"
 }
+
+# Lookup the hosted zone by name
+data "aws_route53_zone" "selected" {
+  name = var.hosted_zone_name
+}
+
+# Create an A record pointing to the EC2 instance public IP
+resource "aws_route53_record" "web_a_record" {
+  zone_id = data.aws_route53_zone.selected.zone_id
+  name    = "${var.record_name}.${data.aws_route53_zone.selected.name}"
+  type    = "A"
+  ttl     = var.record_ttl
+  records = [module.ec2_web.instance_public_ip]
+}

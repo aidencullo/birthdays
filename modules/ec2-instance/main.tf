@@ -30,8 +30,8 @@ resource "aws_security_group" "web_server" {
 }
 
 resource "aws_instance" "web_server" {
-  ami           = var.ami_id
-  instance_type = var.instance_type
+  ami             = var.ami_id
+  instance_type   = var.instance_type
   security_groups = [aws_security_group.web_server.name]
 
   user_data = var.user_data != "" ? var.user_data : null
