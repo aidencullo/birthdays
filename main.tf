@@ -1,9 +1,10 @@
-resource "aws_vpc" "my_vpc" {
+module "vpc" {
+  source     = "./modules/vpc"
   cidr_block = "10.0.0.0/16"
 }
 
 resource "aws_subnet" "my_subnet" {
-  vpc_id            = aws_vpc.my_vpc.id
+  vpc_id            = module.vpc.vpc_id
   cidr_block        = "10.0.1.0/24"
   availability_zone = "us-west-2a"
 }
@@ -11,7 +12,7 @@ resource "aws_subnet" "my_subnet" {
 resource "aws_security_group" "web_server_sg" {
   name        = "web-server-sg"
   description = "Allow SSH and HTTP traffic"
-  vpc_id      = aws_vpc.my_vpc.id
+  vpc_id      = module.vpc.vpc_id
 
   ingress {
     from_port   = 22
