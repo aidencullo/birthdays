@@ -3,7 +3,7 @@ data "aws_ami" "amazon_linux" {
   owners      = ["amazon"]
 }
 
-resource "aws_security_group" "allow_ping" {
+resource "aws_security_group" "allow_all" {
   name        = "allow_ping"
   description = "Allow ICMP ping"
 
@@ -27,6 +27,8 @@ resource "aws_instance" "web_server" {
   instance_type          = "t3.micro"
   vpc_security_group_ids = [aws_security_group.allow_ping.id]
 }
+
+# i-0eada5807efb1c575
 
 
 output "ec2_ip" {
