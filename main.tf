@@ -28,7 +28,9 @@ resource "aws_instance" "web_server" {
   vpc_security_group_ids = [aws_security_group.allow_ping.id]
 }
 
-# i-0eada5807efb1c575
+# data "aws_instance" "existing" {
+#   instance_id = "i-0eada5807efb1c575"
+# }
 
 
 output "ec2_ip" {
