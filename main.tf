@@ -4,7 +4,7 @@ data "aws_ami" "amazon_linux" {
 }
 
 resource "aws_security_group" "allow_all" {
-  name        = "allow_ping"
+  name        = "allow_all"
   description = "Allow ICMP ping"
 
   ingress {
