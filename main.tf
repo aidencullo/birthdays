@@ -25,7 +25,7 @@ resource "aws_security_group" "allow_all" {
 resource "aws_instance" "web_server" {
   ami                    = data.aws_ami.amazon_linux.id
   instance_type          = "t3.micro"
-  vpc_security_group_ids = [aws_security_group.allow_ping.id]
+  vpc_security_group_ids = [aws_security_group.allow_all]
 }
 
 # data "aws_instance" "existing" {
