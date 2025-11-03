@@ -1,19 +1,6 @@
+variable "cidr" { default = "0.0.0.0/0" }
+
 resource "aws_security_group" "allow_all" {
-  name        = "allow_all"
-  description = "Allow ICMP ping"
-
-  ingress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  ingress { from_port = 0, to_port = 0, protocol = "-1", cidr_blocks = [var.cidr] }
+  egress  { from_port = 0, to_port = 0, protocol = "-1", cidr_blocks = [var.cidr] }
 }
-
