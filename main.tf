@@ -1,7 +1,7 @@
-data "aws_ami" "amazon_linux" {
-  most_recent = true
-  owners      = ["amazon"]
-}
+# data "aws_ami" "amazon_linux" {
+#   most_recent = true
+#   owners      = ["amazon"]
+# }
 
 resource "aws_security_group" "allow_all" {
   name        = "allow_all"
@@ -33,7 +33,3 @@ resource "aws_network_interface_sg_attachment" "attach_allow_all" {
 }
 
 
-
-output "ec2_ip" {
-  value = data.aws_instance.web_server.public_ip
-}
