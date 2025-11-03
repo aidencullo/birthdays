@@ -11,3 +11,17 @@ data "aws_instance" "web_server" {
 # }
 
 
+resource "null_resource" "run_on_ec2" {
+  provisioner "remote-exec" {
+    connection {
+      type        = "ssh"
+      host        = data.aws_instance.web_server.public_ip
+      user        = "ec2-user"
+      private_key = file("~/.ssh/mykey.pem")
+    }
+
+    inline = [
+      "echo Hello World"
+    ]
+  }
+}
