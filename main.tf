@@ -1,6 +1,6 @@
 data "aws_instance" "web_server" {
   provider    = aws.east
-  instance_id = "i-0eada5807efb1c575"
+  instance_id = "i-0708457b903363d79"
 }
 
 
@@ -11,17 +11,17 @@ data "aws_instance" "web_server" {
 # }
 
 
-# resource "null_resource" "run_on_ec2" {
-#   provisioner "remote-exec" {
-#     connection {
-#       type        = "ssh"
-#       host        = data.aws_instance.web_server.public_ip
-#       user        = "ec2-user"
-#       private_key = file("~/.ssh/mykey.pem")
-#     }
+resource "null_resource" "run_on_ec2" {
+  provisioner "remote-exec" {
+    connection {
+      type        = "ssh"
+      host        = data.aws_instance.web_server.public_ip
+      user        = "ec2-user"
+      private_key = file("~/.ssh/mykey.pem")
+    }
 
-#     inline = [
-#       "echo Hello World"
-#     ]
-#   }
-# }
+    inline = [
+      "echo Hello World"
+    ]
+  }
+}
