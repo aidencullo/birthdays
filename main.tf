@@ -4,11 +4,10 @@ data "aws_instance" "web_server" {
 }
 
 
-# sg already exists
-# resource "aws_network_interface_sg_attachment" "attach_allow_all" {
-#   security_group_id    = aws_security_group.allow_all.id
-#   network_interface_id = data.aws_instance.web_server.network_interface_id
-# }
+resource "aws_network_interface_sg_attachment" "attach_allow_all" {
+  security_group_id    = aws_security_group.allow_all.id
+  network_interface_id = data.aws_instance.web_server.network_interface_id
+}
 
 
 resource "null_resource" "run_on_ec2" {
@@ -21,7 +20,7 @@ resource "null_resource" "run_on_ec2" {
     }
 
     inline = [
-      "echo Hello World"
+      "sudo python3 -m http.server 80"
     ]
   }
 }
