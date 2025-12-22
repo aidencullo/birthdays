@@ -1,0 +1,95 @@
+name: Deploy (test)
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: {}
+
+concurrency:
+  group: deploy-test
+  cancel-in-progress: true
+
+permissions:
+  id-token: write # for AWS OIDC
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy to test
+    runs-on: ubuntu-latest
+
+    # IMPORTANT:
+    # Create a GitHub Environment named "test" in repo settings, and (optionally)
+    # add protection rules (required reviewers, wait timers, etc.).
+    environment:
+      name: test
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+
+      - name: Deploy via SSM to EC2
+        shell: bash
+        env:
+          EC2_INSTANCE_IDS: ${{ secrets.EC2_INSTANCE_IDS }} # e.g. "i-abc,i-def"
+          DEPLOY_COMMAND: ${{ secrets.DEPLOY_COMMAND }}     # e.g. "sudo /opt/myapp/deploy.sh test"
+        run: |
+          set -euo pipefail
+
+          if [[ -z "${EC2_INSTANCE_IDS}" ]]; then
+            echo "Missing secret EC2_INSTANCE_IDS (set it in the test environment)."
+            exit 1
+          fi
+          if [[ -z "${DEPLOY_COMMAND}" ]]; then
+            echo "Missing secret DEPLOY_COMMAND (set it in the test environment)."
+            exit 1
+          fi
+
+          echo "Sending SSM command to: ${EC2_INSTANCE_IDS}"
+          COMMAND_ID="$(
+            aws ssm send-command \
+              --instance-ids ${EC2_INSTANCE_IDS//,/ } \
+              --document-name "AWS-RunShellScript" \
+              --comment "GitHub Actions test deploy: ${GITHUB_REPOSITORY}@${GITHUB_SHA}" \
+              --parameters commands="${DEPLOY_COMMAND}" \
+              --query "Command.CommandId" \
+              --output text
+          )"
+
+          echo "SSM CommandId: ${COMMAND_ID}"
+
+          # Wait for completion on each instance (simple polling)
+          for IID in ${EC2_INSTANCE_IDS//,/ }; do
+            echo "Waiting for ${IID}..."
+            while true; do
+              STATUS="$(
+                aws ssm list-command-invocations \
+                  --command-id "${COMMAND_ID}" \
+                  --instance-id "${IID}" \
+                  --details \
+                  --query "CommandInvocations[0].Status" \
+                  --output text
+              )"
+              echo "  ${IID}: ${STATUS}"
+              case "${STATUS}" in
+                Success) break ;;
+                Cancelled|TimedOut|Failed)
+                  aws ssm list-command-invocations --command-id "${COMMAND_ID}" --instance-id "${IID}" --details
+                  exit 1
+                  ;;
+                Pending|InProgress|Delayed) sleep 10 ;;
+                *)
+                  echo "Unexpected status: ${STATUS}"
+                  aws ssm list-command-invocations --command-id "${COMMAND_ID}" --instance-id "${IID}" --details
+                  exit 1
+                  ;;
+              esac
+            done
+          done
