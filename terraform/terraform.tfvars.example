@@ -1,0 +1,13 @@
+# Example values (copy to terraform.tfvars and edit)
+root_domain     = "example.com"
+# hosted_zone_id = "Z123456ABCDEFG" # optional
+
+aws_region = "us-west-2"
+
+allowed_ssh_cidrs = ["203.0.113.10/32"]
+ssh_public_key    = "ssh-ed25519 AAAA... you@laptop"
+
+# Optional DB per environment:
+# dev_create_db  = true
+# test_create_db = true
+
