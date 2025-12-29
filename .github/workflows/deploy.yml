@@ -1,0 +1,47 @@
+name: Deploy to EC2
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to EC2
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+          EC2_KEY: ${{ secrets.EC2_SSH_KEY }}
+        run: |
+          # Setup SSH key
+          mkdir -p ~/.ssh
+          echo "$EC2_KEY" > ~/.ssh/ec2_key.pem
+          chmod 600 ~/.ssh/ec2_key.pem
+
+          # Add EC2 to known hosts
+          ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts
+
+          # Create directory on EC2
+          ssh -i ~/.ssh/ec2_key.pem $EC2_USER@$EC2_HOST "mkdir -p ~/birthdays"
+
+          # Copy files to EC2
+          scp -i ~/.ssh/ec2_key.pem -r ./* $EC2_USER@$EC2_HOST:~/birthdays/
+
+          # Run deployment script
+          ssh -i ~/.ssh/ec2_key.pem $EC2_USER@$EC2_HOST "cd ~/birthdays && chmod +x deploy.sh && ./deploy.sh"
+
+      - name: Verify deployment
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+        run: |
+          echo "Waiting for app to start..."
+          sleep 5
+          curl -f http://$EC2_HOST || echo "Warning: App may not be responding yet"
+          echo "Deployment complete! Visit http://$EC2_HOST"
