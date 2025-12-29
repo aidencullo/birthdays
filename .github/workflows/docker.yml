@@ -1,0 +1,12 @@
+name: Docker
+on: push
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t flask-app .
+      - run: docker run -d -p 5000:5000 --name flask-app flask-app
+      - run: sleep 3
+      - run: curl http://localhost:5000
+      - run: docker logs flask-app
