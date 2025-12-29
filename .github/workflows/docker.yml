@@ -5,5 +5,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: docker build -t app .
-      - run: docker run app
+      - run: docker build -t app1-image ./app1
+      - run: docker build -t app2-image ./app2
+      - run: docker network create mynet
+      - run: docker run -d --name app1 --network mynet app1-image
+      - run: docker run -d --name app2 --network mynet app2-image
+      - run: sleep 5
+      - run: docker logs app1
+      - run: docker logs app2
