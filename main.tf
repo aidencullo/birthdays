@@ -25,6 +25,11 @@ variable "instance_type" {
 resource "aws_instance" "main" {
   ami           = var.ami_id
   instance_type = var.instance_type
+
+  user_data = <<-EOF
+              #!/bin/bash
+              echo "hello world"
+              EOF
 }
 
 output "instance_id" {
