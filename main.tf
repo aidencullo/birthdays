@@ -30,6 +30,8 @@ resource "aws_instance" "main" {
               #!/bin/bash
               echo "hello world"
               EOF
+
+  user_data_replace_on_change = true
 }
 
 output "instance_id" {
