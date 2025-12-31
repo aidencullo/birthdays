@@ -36,7 +36,17 @@ resource "aws_instance" "main" {
 
   user_data = <<-EOF
               #!/bin/bash
-              echo "hello world"
+              # Update package manager
+              yum update -y
+
+              # Install nginx
+              amazon-linux-extras install nginx1 -y
+
+              # Start nginx service
+              systemctl start nginx
+
+              # Enable nginx to start on boot
+              systemctl enable nginx
               EOF
 
   user_data_replace_on_change = true
