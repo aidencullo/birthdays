@@ -39,14 +39,17 @@ resource "aws_instance" "main" {
               # Update package manager
               yum update -y
 
-              # Install nginx
-              amazon-linux-extras install nginx1 -y
+              # Install Docker
+              amazon-linux-extras install docker -y
 
-              # Start nginx service
-              systemctl start nginx
+              # Start Docker service
+              systemctl start docker
 
-              # Enable nginx to start on boot
-              systemctl enable nginx
+              # Enable Docker to start on boot
+              systemctl enable docker
+
+              # Run a barebones Docker container (alpine with a simple hello message)
+              docker run -d --name barebones-container alpine sleep infinity
               EOF
 
   user_data_replace_on_change = true
