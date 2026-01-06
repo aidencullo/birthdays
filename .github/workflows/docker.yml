@@ -17,7 +17,7 @@ jobs:
       run: docker build -t birthdays:latest .
 
     - name: Run Docker image
-      run: docker run -d -p 5001:5001 birthdays:latest
+      run: docker run -d -p 80:5001 birthdays:latest
 
     - name: Test Docker container
-      run: sleep 5 && curl http://localhost:5001
+      run: sleep 5 && curl http://localhost:80
